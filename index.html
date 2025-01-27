@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Priority Access List</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+
+<body>
+    <!-- Progress Bar -->
+    <div class="progress-container">
+        <div class="progress-bar" id="progressBar"></div>
+    </div>
+
+    <!-- Content -->
+    <div class="content-container">
+        <!-- Welcome Screen -->
+        <div class="screen active back-button.hidden" id="welcome">
+            <h1>Priority Access List</h1>
+            <h2>elephant racquet club</h2>
+            <p><em>Rallies - Laughter - Memories</em></p>
+            <button class="start-button" onclick="nextScreen('name')">START</button>
+        </div>
+
+        <!-- Name Input -->
+        <div class="screen" id="name">
+            <h2 data-step="1"> What is your full name?*</h2>
+            <input type="text" id="nameInput" placeholder="Type your answer here..." required>
+            <div class="button-container">
+                <button onclick="validateAndNext('name', 'number')">OK</button>
+                <span class="enter-text">press Enter ↵</span>
+            </div>
+        </div>
+
+        <!-- Phone Number Input -->
+        <div class="screen" id="number">
+            <h2 data-step="2"> What is your phone number?*</h2>
+            <div class="phone-container">
+                <select id="countryCode">
+                    <option value="+91" selected>🇮🇳 +91</option>
+                </select>
+                <input type="tel" id="numberInput" placeholder="XXXXXXXXXX" required maxlength="10">
+            </div>
+            <div class="button-container">
+                <button onclick="validateAndNext('number', 'email')">OK</button>
+                <span class="enter-text">press Enter ↵</span>
+            </div>
+        </div>
+
+        <!-- Email Input -->
+        <div class="screen" id="email">
+            <h2 data-step="3"> What is your email address?*</h2>
+            <input type="email" id="emailInput" placeholder="Type your answer here..." required>
+            <div class="button-container">
+                <button onclick="validateAndNext('email', 'city')">OK</button>
+                <span class="enter-text">press Enter ↵</span>
+            </div>
+        </div>
+
+        <!-- City Input -->
+        <div class="screen" id="city">
+            <h2 data-step="4"> Which city do you live in? (Optional)</h2>
+            <input type="text" id="cityInput" placeholder="Type your answer here...">
+            <div class="button-container ">
+                <button onclick="submitForm()">SUBMIT</button>
+                <span class="enter-text">press Enter ↵</span>
+            </div>
+        </div>
+
+        <!-- Thank You Screen -->
+        <div class="screen back-button.hidden" id="thanks">
+            <h1>Thank You!</h1>
+            <p>Your information has been submitted successfully.</p>
+        </div>
+        <div>
+            <button class="back-button" onclick="goBack()">
+                <img src="./assets/back-button.png" alt="Back" class="icon">
+            </button>
+            <div class="branding">
+                <a href="https://delhidigital.co" target="_blank">Powered by<strong> Delhi Digital Co</strong></a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stars -->
+    <img src="./assets/Asset 1@3x.png" alt="Stars" class="stars top-right">
+    <img src="./assets/Asset 1@3x.png" alt="Stars" class="stars bottom-left">
+
+    <script src="scripts.js"></script>
+</body>
+
+</html>

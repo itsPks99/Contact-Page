@@ -1,0 +1,399 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
+
+:root {
+    --primary: #8B1E1E;
+    --background: hsl(226.34deg 43.35% 45.69%);
+    --muted: #E5D1CC;
+    --text: white;
+    /* Responsive font scaling */
+    --font-size-base: 16px; /* Default base font size */
+    --font-size-small: calc(var(--font-size-base) * 0.9);
+    --font-size-medium: calc(var(--font-size-base) * 1.1);
+    --font-size-large: calc(var(--font-size-base) * 1.3);
+
+    /* Layout spacing */
+    --spacing-small: 8px;
+    --spacing-medium: 16px;
+    --spacing-large: 24px;
+}
+
+html {
+    font-size: var(--font-size-base); /* Default font size */
+    scroll-behavior: smooth;
+}
+
+
+/* Utility Classes */
+.full-width {
+    width: 100%;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.text-left {
+    text-align: left;
+}
+
+.hidden {
+    display: none;
+}
+
+* {
+    font-family: "Poppins";
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--background);
+    color: var(--text);
+    /* height: 100vh; */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+.progress-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 5px;
+    background-color: #6697cf;
+}
+
+.progress-bar {
+    height: 100%;
+    width: 0;
+    background-color: #52c8ee;
+    transition: width 0.3s ease;
+}
+
+.content-container {
+      height: 100vh;
+    text-align: center;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    padding: 20px;
+}
+
+.screen {
+    display: none;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.screen.active {
+    display: flow-root;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+h1 {
+    font-size: 2em; /* Updated size */
+    margin-bottom: 0.5rem;
+    color: white;
+}
+
+h2 {
+    font-size: 1em; /* Updated size */
+    margin-bottom: 1rem;
+}
+
+p {
+    font-size: 1.5em; /* Updated size */
+    margin-bottom: 1rem;
+}
+
+h2[data-step]::before {
+    content: attr(data-step) "→ ";
+    color: hsl(219, 44%, 94%);
+    font-weight: bold;
+    font-size: 1.5rem;
+}
+
+button {
+    background-color: #A4C6FF;
+    color: #4667A3;
+    border: none;
+    padding: 10px 30px;
+    border-radius: 20px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+button:hover {
+    background-color: #88B0FF;
+}
+
+input {
+    width: 100%;
+    max-width:fit-content;
+    padding: 10px;
+    border: none;
+    border-bottom: 2px solid var(--muted);
+    background-color: transparent;
+    color: var(--text);
+    font-size: 1rem;
+}
+
+input::placeholder {
+    color: var(--muted);
+}
+
+input:focus {
+    outline: none;
+    border-bottom-color: var(--muted);
+    max-width: fit-content;
+}
+
+.phone-container {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+select {
+    padding: 7px;
+    font-size: 1rem;
+    background: white;
+    border: none;
+    border-radius: 3px;
+}
+
+.stars {
+    position: absolute;
+    z-index: 0;
+    pointer-events: none;
+    width: 350px; /* Updated size */
+}
+
+.stars.top-right {
+    top: 20px; /* Updated margin */
+    right: 20px; /* Updated margin */
+}
+
+.stars.bottom-left {
+    bottom: 100px; /* Updated margin */
+    left: 20px; /* Updated margin */
+}
+
+.branding {
+    position: fixed;
+    bottom: env(safe-area-inset-bottom, 10px); /* Account for safe area insets (iPhones) */
+    right: env(safe-area-inset-right, 10px); /* Align to the right */
+    font-size: 1rem; /* Default font size */
+    color: white;
+    z-index: 10; /* Ensure visibility above other elements */
+    text-align: right; /* Align text to the right */
+    padding: 5px 10px;
+    margin-bottom: 40px;
+    box-sizing: border-box; /* Ensure proper padding inclusion */
+}
+
+.branding a {
+    text-decoration: none;
+    color: white;
+    font-weight: bold;
+    font-size: inherit; /* Inherit font size from the parent */
+    display: inline-block;
+    text-align: right; /* Align the link to the right */
+}
+
+@media (max-width: 768px) {
+    .branding {
+        font-size: 0.9rem; /* Slightly smaller font for tablets */
+        padding: 8px 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    .branding {
+        font-size: 0.8rem; /* Smaller font for mobile devices */
+        padding: 6px 8px;
+    }
+}
+
+
+.button-container {
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+    justify-content: center;
+}
+
+.enter-text {
+    font-size: 0.9rem;
+    color: var(--muted);
+    margin-left: 10px;
+}
+
+
+.back-button {
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    background: transparent;
+    border: none;
+    padding: 20px;
+    cursor: pointer;
+    display: flex; /* Flexbox for centering content */
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    transition: transform 0.2s ease; /* Smooth hover effect */
+}
+
+.back-button.hidden {
+    display: none; /* Hide the back button when necessary */
+}
+
+.back-button .icon {
+    width: 24px; /* Default icon size */
+    height: 24px;
+    vertical-align: middle;
+    object-fit: contain; /* Ensures proper scaling */
+}
+
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .back-button {
+        top: 15px; /* Adjusted position for tablets */
+        left: 15px; /* Adjusted position for tablets */
+        padding: 6px; /* Smaller padding */
+    }
+
+    .back-button .icon {
+        width: 20px; /* Smaller icon for tablets */
+        height: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .back-button {
+        top: 20px; /* Adjusted position for mobile */
+        left: 20px; /* Adjusted position for mobile */
+        padding: 4px; /* Smaller padding for mobile */
+    }
+
+    .back-button .icon {
+        width: 18px; /* Smaller icon for mobile */
+        height: 18px;
+    }
+}
+
+
+
+/* Responsive Design */
+@media (max-width: 768px) {
+
+    :root {
+        --font-size-base: 15px; /* Slightly smaller base font for tablets */
+    }
+
+    body {
+        padding: var(--spacing-small);
+    }
+    h1 {
+        font-size: 1.8em; /* Slightly smaller for tablets */
+    }
+
+    h2 {
+        font-size: 1.6em; /* Slightly smaller for tablets */
+    }
+
+    p {
+        font-size: 1.3em; /* Slightly smaller for tablets */
+    }
+
+    input {
+        font-size: 1rem;
+        padding: 8px;
+    }
+
+    button {
+        padding: 8px 20px;
+        font-size: 0.9rem;
+    }
+
+    .phone-container {
+        flex-direction: row;
+        gap: 15px;
+    }
+
+    .back-button {
+        top: 15px; /* Adjusted position */
+        left: 15px; /* Adjusted position */
+        font-size: 0.9rem; /* Smaller font size */
+        padding: 5px 8px; /* Adjusted padding */
+    }
+    .stars.top-right,
+    .stars.bottom-left {
+        width: 250px; /* Adjust size for smaller screens */
+    }
+
+}
+
+@media (max-width: 480px) {
+
+    :root {
+        --font-size-base: 14px; /* Smaller base font for mobile devices */
+    }
+
+    body {
+        padding: var(--spacing-small);
+        flex-direction: column; /* Stack items vertically for small screens */
+    }
+    h1 {
+        font-size: 1.5em; /* Smaller for mobile */
+    }
+
+    h2 {
+        font-size: 1.6em; /* Smaller for mobile */
+    }
+
+    p {
+        font-size: 1.2em; /* Smaller for mobile */
+    }
+
+    .back-button {
+        top: 20px;; /* Further adjusted position */
+        left: 20px; /* Further adjusted position */
+        font-size: 0.8rem; /* Even smaller font size */
+        padding: 4px 6px; /* Adjusted padding for smaller screens */
+    }
+
+    input {
+        font-size: 1.3rem;
+        padding: 6px;
+    }
+
+    button {
+        padding: 6px 15px;
+        font-size: 0.8rem;
+    }
+
+    .phone-container {
+        flex-direction: row;
+        gap: 10px;
+    }
+
+    .stars.top-right,
+    .stars.bottom-left {
+        width: 180px; /* Adjust size for small screens */
+    }
+
+}
