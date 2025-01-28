@@ -15,9 +15,10 @@ function loadGoogleAPI() {
             clientId: CLIENT_ID,
             scope: SCOPES,
         }).then(() => {
-            return gapi.client.load('sheets', 'v4'); // Explicitly load Sheets API
+            // Explicitly load the Sheets API
+            return gapi.client.load('sheets', 'v4');
         }).then(() => {
-            console.log('Google API and Sheets API initialized.');
+            console.log('Google Sheets API initialized successfully.');
         }).catch((error) => {
             console.error('Error initializing Google API or Sheets API:', error);
         });
@@ -115,11 +116,11 @@ function clearInputs() {
 async function submitFormToGoogleSheet() {
     if (!gapi.client.sheets) {
         console.error('Google Sheets API not loaded.');
-        Swal.fire('Error', 'Google Sheets API not loaded. Please try again.', 'error');
+        Swal.fire('Error', 'Google Sheets API is not loaded. Please try again.', 'error');
         return;
     }
 
-    const sheetId = '1KSyxs79sns62OcVz-keYZAToF15HIT8uKON-B-NpQqw'; // Replace with your Spreadsheet ID
+    const sheetId = '1KSyxs79sns62OcVz-keYZAToF15HIT8uKON-B-NpQqw'; // Replace with your spreadsheet ID
     const sheetName = 'Contacts Data'; // Replace with your sheet/tab name
 
     formData.city = document.getElementById('cityInput').value.trim(); // Save the city value
@@ -136,20 +137,13 @@ async function submitFormToGoogleSheet() {
         });
 
         console.log('Form submitted successfully:', response);
-        Swal.fire({
-            position: 'center',
-            icon: 'success',
-            title: 'Your Details have been saved',
-            showConfirmButton: false,
-            timer: 1500,
-        });
-        showScreen(screens.length - 1); // Show the "Thank You" screen
-        clearInputs(); // Clear all inputs after successful submission
+        Swal.fire('Success!', 'Your details have been saved.', 'success');
     } catch (error) {
         console.error('Error submitting form:', error);
         Swal.fire('Error', 'Failed to submit the form. Please try again.', 'error');
     }
 }
+
 
 
 // Initial setup
