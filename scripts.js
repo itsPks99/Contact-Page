@@ -10,8 +10,20 @@ const formData = {};
 
 // Load the Google API
 function loadGoogleAPI() {
-    gapi.load('client:auth2', initGoogleClient);
+    gapi.load('client:auth2', () => {
+        gapi.client.init({
+            clientId: CLIENT_ID,
+            scope: SCOPES,
+        }).then(() => {
+            return gapi.client.load('sheets', 'v4'); // Explicitly load Sheets API
+        }).then(() => {
+            console.log('Google API and Sheets API initialized.');
+        }).catch((error) => {
+            console.error('Error initializing Google API or Sheets API:', error);
+        });
+    });
 }
+
 
 // Initialize the Google API client
 function initGoogleClient() {
@@ -29,11 +41,12 @@ function initGoogleClient() {
 function authenticate() {
     gapi.auth2.getAuthInstance().signIn().then(() => {
         console.log('User authenticated.');
-        submitFormToGoogleSheet(); // Proceed with form submission
+        submitFormToGoogleSheet(); // Call this only after successful authentication
     }).catch((error) => {
         console.error('Error during authentication:', error);
     });
 }
+
 
 // Update the progress bar
 function updateProgress() {
@@ -100,11 +113,17 @@ function clearInputs() {
 
 // Submit the form data to Google Sheets
 async function submitFormToGoogleSheet() {
-    const sheetId = '1KSyxs79sns62OcVz-keYZAToF15HIT8uKON-B-NpQqw'; // Replace with your spreadsheet ID
+    if (!gapi.client.sheets) {
+        console.error('Google Sheets API not loaded.');
+        Swal.fire('Error', 'Google Sheets API not loaded. Please try again.', 'error');
+        return;
+    }
+
+    const sheetId = '1KSyxs79sns62OcVz-keYZAToF15HIT8uKON-B-NpQqw'; // Replace with your Spreadsheet ID
     const sheetName = 'Contacts Data'; // Replace with your sheet/tab name
 
     formData.city = document.getElementById('cityInput').value.trim(); // Save the city value
-    console.log('Form Data:', formData);
+    console.log('Submitting Form Data:', formData);
 
     try {
         const response = await gapi.client.sheets.spreadsheets.values.append({
@@ -127,10 +146,11 @@ async function submitFormToGoogleSheet() {
         showScreen(screens.length - 1); // Show the "Thank You" screen
         clearInputs(); // Clear all inputs after successful submission
     } catch (error) {
-        console.error('Error submitting form to Google Sheets:', error);
-        Swal.fire('Error submitting form', 'Please try again.', 'error');
+        console.error('Error submitting form:', error);
+        Swal.fire('Error', 'Failed to submit the form. Please try again.', 'error');
     }
 }
+
 
 // Initial setup
 showScreen(currentStep);
