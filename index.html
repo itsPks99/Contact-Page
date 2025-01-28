@@ -43,7 +43,7 @@
                 <select id="countryCode">
                     <option value="+91" selected>🇮🇳 +91</option>
                 </select>
-                <input type="tel" id="numberInput" placeholder="XXXXXXXXXX" required maxlength="10">
+                <input type="tel" id="numberInput" placeholder="Type your answer here..." required maxlength="10">
             </div>
             <div class="button-container">
                 <button onclick="validateAndNext('number', 'email')">OK</button>
@@ -66,7 +66,7 @@
             <h2 data-step="4"> Which city do you live in? (Optional)</h2>
             <input type="text" id="cityInput" placeholder="Type your answer here...">
             <div class="button-container ">
-                <button onclick="submitForm()">SUBMIT</button>
+                <button onclick="submitFormToBackend()">SUBMIT</button>
                 <span class="enter-text">press Enter ↵</span>
             </div>
         </div>
