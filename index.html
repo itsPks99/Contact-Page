@@ -6,11 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Priority Access List</title>
     <link rel="stylesheet" href="style.css">
-    <script src="https://apis.google.com/js/api.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <meta http-equiv="Content-Security-Policy" content="script-src 'self' https://apis.google.com https://www.gstatic.com https://accounts.google.com 'unsafe-inline';">
-
-
 </head>
 
 <body>
@@ -70,7 +66,7 @@
             <h2 data-step="4"> Which city do you live in? (Optional)</h2>
             <input type="text" id="cityInput" placeholder="Type your answer here...">
             <div class="button-container ">
-                <button onclick="submitFormToGoogleSheet()">SUBMIT</button>
+                <button onclick="submitForm()">SUBMIT</button>
                 <span class="enter-text">press Enter ↵</span>
             </div>
         </div>
