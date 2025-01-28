@@ -24,6 +24,13 @@ html {
 
 
 /* Utility Classes */
+
+.logo{
+    max-width: 150px;
+    max-height: fit-content;
+    margin-bottom: 10px;
+}
+
 .full-width {
     width: 100%;
 }
@@ -83,6 +90,35 @@ body {
     flex-direction: column;
     padding: 20px;
 }
+
+.stars.top-right {
+    margin-top: 50px;
+    top: 20px;
+    right: 20px;
+}
+
+.stars.bottom-left {
+    bottom: 20px;
+    left: 20px;
+}
+.stars {
+    position: absolute;
+    z-index: 0;
+    pointer-events: none;
+    width: 350px;
+}
+
+.stars {
+    display: none; /* Hidden by default */
+  }
+  
+  /* Show only on mobile and tablets */
+  @media screen and (max-width: 1024px) {
+    .stars {
+      display: block; /* Visible on devices with width <= 1024px */
+    }
+  }
+
 
 .screen {
     display: none;
@@ -391,7 +427,10 @@ select {
         gap: 10px;
     }
 
-    .stars.top-right,
+    .stars.top-right{
+        margin-top: 50px;
+        width: 180px;
+    }
     .stars.bottom-left {
         width: 180px; /* Adjust size for small screens */
     }
