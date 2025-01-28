@@ -81,7 +81,7 @@ async function submitForm() {
 
     try {
         // Send the request to the backend
-        const response = await fetch('http://localhost:5000/api/customer-data', {
+        const response = await fetch('https://contact-server-e4ge.onrender.com', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
