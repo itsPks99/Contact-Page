@@ -44,16 +44,17 @@ function nextScreen(screenId) {
 function validateInput(currentId) {
     if (currentId === 'number') {
         const phoneNumber = document.getElementById('numberInput').value.trim();
-        const regex = /^\d{10}$/; // Validates a 10-digit phone number
-        if (!regex.test(phoneNumber)) {
+        const phoneRegex = /^\d{10}$/; // Validate exactly 10 digits
+        const cleanedNumber = phoneNumber.replace(/\D/g, ''); // Remove non-numeric characters
+        if (!phoneRegex.test(cleanedNumber)) {
             Swal.fire('Please enter a valid 10-digit phone number.');
             return false;
         }
-        formData[currentId] = `${document.getElementById('countryCode').value} ${phoneNumber}`;
+        formData[currentId] = cleanedNumber; // Use cleaned number without non-numeric characters
     } else if (currentId === 'email') {
         const email = document.getElementById('emailInput').value.trim();
-        const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Validates email format
-        if (!regex.test(email)) {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Validate email format
+        if (!emailRegex.test(email)) {
             Swal.fire('Please enter a valid email address.');
             return false;
         }
@@ -68,6 +69,7 @@ function validateInput(currentId) {
     }
     return true;
 }
+
 
 // Validate input and navigate to the next screen
 function validateAndNext(currentId, nextId) {
