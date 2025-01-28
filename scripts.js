@@ -1,3 +1,7 @@
+// Client ID and Scopes
+const CLIENT_ID = '1024755388687-etqa242hdcc78fbm09bvoejvtm2np20r.apps.googleusercontent.com'; // Replace with your actual Client ID
+const SCOPES = 'https://www.googleapis.com/auth/spreadsheets';
+
 // Collect all screens and initialize variables
 const screens = Array.from(document.querySelectorAll('.screen'));
 const backButton = document.querySelector('.back-button');
@@ -6,7 +10,7 @@ const formData = {};
 
 // Update the progress bar
 function updateProgress() {
-    const progress = (currentStep / (screens.length-2)) * 100;
+    const progress = (currentStep / (screens.length - 2)) * 100;
     document.getElementById('progressBar').style.width = `${progress}%`;
 }
 
@@ -18,11 +22,7 @@ function showScreen(index) {
     updateProgress();
 
     // Show or hide the back button based on the current screen
-    if (currentStep === 0) {
-        backButton.classList.add('hidden');
-    } else {
-        backButton.classList.remove('hidden');
-    }
+    backButton.classList.toggle('hidden', currentStep === 0);
 }
 
 // Navigate back to the previous screen
@@ -40,25 +40,40 @@ function nextScreen(screenId) {
     showScreen(screens.indexOf(nextScreen));
 }
 
-// Validate input and navigate to the next screen
-function validateAndNext(currentId, nextId) {
+// Validate input fields
+function validateInput(currentId) {
     if (currentId === 'number') {
-        const countryCode = document.getElementById('countryCode').value;
         const phoneNumber = document.getElementById('numberInput').value.trim();
-        if (phoneNumber === '') {
-            Swal.fire('Phone number is required.');
-            return;
+        const regex = /^\d{10}$/; // Validates a 10-digit phone number
+        if (!regex.test(phoneNumber)) {
+            Swal.fire('Please enter a valid 10-digit phone number.');
+            return false;
         }
-        formData[currentId] = `${countryCode} ${phoneNumber}`;
+        formData[currentId] = `${document.getElementById('countryCode').value} ${phoneNumber}`;
+    } else if (currentId === 'email') {
+        const email = document.getElementById('emailInput').value.trim();
+        const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Validates email format
+        if (!regex.test(email)) {
+            Swal.fire('Please enter a valid email address.');
+            return false;
+        }
+        formData[currentId] = email;
     } else {
         const input = document.getElementById(`${currentId}Input`);
         if (input.required && input.value.trim() === '') {
             Swal.fire('This field is required!');
-            return;
+            return false;
         }
         formData[currentId] = input.value.trim();
     }
-    nextScreen(nextId);
+    return true;
+}
+
+// Validate input and navigate to the next screen
+function validateAndNext(currentId, nextId) {
+    if (validateInput(currentId)) {
+        nextScreen(nextId);
+    }
 }
 
 // Clear all inputs
@@ -66,22 +81,19 @@ function clearInputs() {
     document.querySelectorAll('input').forEach((input) => {
         input.value = '';
     });
-    formData.name = '';
-    formData.number = '';
-    formData.email = '';
-    formData.city = '';
+    Object.keys(formData).forEach((key) => {
+        formData[key] = '';
+    });
 }
 
 // Submit the form data to the backend
-async function submitForm() {
-    const cityInput = document.getElementById('cityInput');
-    formData.city = cityInput.value.trim(); // Save the city value in formData
-
+async function submitFormToBackend() {
+    const backendUrl = 'https://contact-server-e4ge.onrender.com/api/customer-data'; // Replace with your backend URL
+    formData.city = document.getElementById('cityInput').value.trim(); // Save the city value
     console.log('Form Data:', formData);
 
     try {
-        // Send the request to the backend
-        const response = await fetch('https://contact-server-e4ge.onrender.com/api/customer-data', {
+        const response = await fetch(backendUrl, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -94,27 +106,27 @@ async function submitForm() {
             }),
         });
 
-        // Parse the response
-        if (response.ok) {
-            const result = await response.json();
-            console.log('Form submitted successfully:', result);
-            Swal.fire({
-                position: 'center',
-                icon: 'success',
-                title: 'Your Details have been saved',
-                showConfirmButton: false,
-                timer: 1500,
-            });
-            showScreen(screens.length - 1); // Show the "Thanks" screen
-            clearInputs(); // Clear all inputs after successful submission
-        } else {
-            const error = await response.json();
-            console.error('Error submitting form:', error);
-            Swal.fire('Error submitting form', error.message || 'Please try again.', 'error');
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(`Server Error: ${errorText}`);
         }
+
+        const result = await response.json();
+        console.log('Form submitted successfully:', result);
+
+        Swal.fire({
+            position: 'center',
+            icon: 'success',
+            title: 'Your Details have been saved',
+            showConfirmButton: false,
+            timer: 1500,
+        });
+
+        showScreen(screens.length - 1); // Show the "Thank You" screen
+        clearInputs(); // Clear all inputs after successful submission
     } catch (error) {
         console.error('Error submitting form:', error);
-        Swal.fire('Error submitting form', 'Please try again.', 'error');
+        Swal.fire('Error submitting form', error.message || 'Please try again.', 'error');
     }
 }
 
