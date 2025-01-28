@@ -1,57 +1,12 @@
-// Client ID and Scopes
-const CLIENT_ID = '1024755388687-etqa242hdcc78fbm09bvoejvtm2np20r.apps.googleusercontent.com'; // Replace with your actual Client ID
-const SCOPES = 'https://www.googleapis.com/auth/spreadsheets';
-
 // Collect all screens and initialize variables
 const screens = Array.from(document.querySelectorAll('.screen'));
 const backButton = document.querySelector('.back-button');
 let currentStep = 0;
 const formData = {};
 
-// Load the Google API
-function loadGoogleAPI() {
-    gapi.load('client:auth2', () => {
-        gapi.client.init({
-            clientId: CLIENT_ID,
-            scope: SCOPES,
-        }).then(() => {
-            // Explicitly load the Sheets API
-            return gapi.client.load('sheets', 'v4');
-        }).then(() => {
-            console.log('Google Sheets API initialized successfully.');
-        }).catch((error) => {
-            console.error('Error initializing Google API or Sheets API:', error);
-        });
-    });
-}
-
-
-// Initialize the Google API client
-function initGoogleClient() {
-    gapi.client.init({
-        clientId: CLIENT_ID,
-        scope: SCOPES,
-    }).then(() => {
-        console.log('Google API client initialized.');
-    }).catch((error) => {
-        console.error('Error initializing Google API client:', error);
-    });
-}
-
-// Authenticate the user
-function authenticate() {
-    gapi.auth2.getAuthInstance().signIn().then(() => {
-        console.log('User authenticated.');
-        submitFormToGoogleSheet(); // Call this only after successful authentication
-    }).catch((error) => {
-        console.error('Error during authentication:', error);
-    });
-}
-
-
 // Update the progress bar
 function updateProgress() {
-    const progress = (currentStep / (screens.length - 2)) * 100;
+    const progress = (currentStep / (screens.length-2)) * 100;
     document.getElementById('progressBar').style.width = `${progress}%`;
 }
 
@@ -63,7 +18,11 @@ function showScreen(index) {
     updateProgress();
 
     // Show or hide the back button based on the current screen
-    backButton.classList.toggle('hidden', currentStep === 0);
+    if (currentStep === 0) {
+        backButton.classList.add('hidden');
+    } else {
+        backButton.classList.remove('hidden');
+    }
 }
 
 // Navigate back to the previous screen
@@ -107,45 +66,57 @@ function clearInputs() {
     document.querySelectorAll('input').forEach((input) => {
         input.value = '';
     });
-    Object.keys(formData).forEach((key) => {
-        formData[key] = '';
-    });
+    formData.name = '';
+    formData.number = '';
+    formData.email = '';
+    formData.city = '';
 }
 
-// Submit the form data to Google Sheets
-async function submitFormToGoogleSheet() {
-    if (!gapi.client.sheets) {
-        console.error('Google Sheets API not loaded.');
-        Swal.fire('Error', 'Google Sheets API is not loaded. Please try again.', 'error');
-        return;
-    }
+// Submit the form data to the backend
+async function submitForm() {
+    const cityInput = document.getElementById('cityInput');
+    formData.city = cityInput.value.trim(); // Save the city value in formData
 
-    const sheetId = '1KSyxs79sns62OcVz-keYZAToF15HIT8uKON-B-NpQqw'; // Replace with your spreadsheet ID
-    const sheetName = 'Contacts Data'; // Replace with your sheet/tab name
-
-    formData.city = document.getElementById('cityInput').value.trim(); // Save the city value
-    console.log('Submitting Form Data:', formData);
+    console.log('Form Data:', formData);
 
     try {
-        const response = await gapi.client.sheets.spreadsheets.values.append({
-            spreadsheetId: sheetId,
-            range: `${sheetName}!A1`,
-            valueInputOption: 'USER_ENTERED',
-            resource: {
-                values: [[formData.name, formData.number, formData.email, formData.city]],
+        // Send the request to the backend
+        const response = await fetch('http://localhost:5000/api/customer-data', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
             },
+            body: JSON.stringify({
+                name: formData.name,
+                number: formData.number,
+                email: formData.email,
+                city: formData.city,
+            }),
         });
 
-        console.log('Form submitted successfully:', response);
-        Swal.fire('Success!', 'Your details have been saved.', 'success');
+        // Parse the response
+        if (response.ok) {
+            const result = await response.json();
+            console.log('Form submitted successfully:', result);
+            Swal.fire({
+                position: 'center',
+                icon: 'success',
+                title: 'Your Details have been saved',
+                showConfirmButton: false,
+                timer: 1500,
+            });
+            showScreen(screens.length - 1); // Show the "Thanks" screen
+            clearInputs(); // Clear all inputs after successful submission
+        } else {
+            const error = await response.json();
+            console.error('Error submitting form:', error);
+            Swal.fire('Error submitting form', error.message || 'Please try again.', 'error');
+        }
     } catch (error) {
         console.error('Error submitting form:', error);
-        Swal.fire('Error', 'Failed to submit the form. Please try again.', 'error');
+        Swal.fire('Error submitting form', 'Please try again.', 'error');
     }
 }
-
-
 
 // Initial setup
 showScreen(currentStep);
-loadGoogleAPI();
